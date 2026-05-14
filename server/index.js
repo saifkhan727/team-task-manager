@@ -10,22 +10,23 @@ const dashboardRoutes = require('./routes/dashboard');
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 
-// DB connection check
 pool.query('SELECT NOW()', (err, res) => {
   if (err) console.error('DB Error:', err);
   else console.log('DB Connected ✅', res.rows[0]);
 });
 
-// Routes
 app.use('/auth', authRoutes);
 app.use('/projects', projectRoutes);
 app.use('/', taskRoutes);
 app.use('/dashboard', dashboardRoutes);
 
-// Health check
 app.get('/', (req, res) => {
   res.json({ message: 'Team Task Manager API running ✅' });
 });
